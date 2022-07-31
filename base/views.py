@@ -1,21 +1,14 @@
 from django.shortcuts import render
-
-rooms = [
-    {'id': 1, 'name': 'Learn Python'},
-    {'id': 2, 'name': 'Learn Design'},
-    {'id': 3, 'name': 'Frontend Devs Assemble'},
-]
+from .models import Room
 
 
 def home(request):
+    rooms = Room.objects.all()
     context = {'rooms': rooms}
     return render(request, 'base/home.html', context)
 
 
 def room(request, id):
-    found_room = None
-    for room in rooms:
-        if room['id'] == int(id):
-            found_room = room
-    context = {'room': found_room}
+    room = Room.objects.get(id=id)
+    context = {'room': room}
     return render(request, 'base/room.html', context)
