@@ -85,6 +85,8 @@ def room(request, id):
             room=room,
             body=request.POST.get('body')
         )
+        # Add the commenter to the participants
+        room.participants.add(request.user)
         return redirect('room', id=room.id)
 
     context = {'room': room,
