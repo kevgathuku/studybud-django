@@ -1,7 +1,9 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room, Topic
 from .forms import RoomForm
@@ -54,6 +56,7 @@ def room(request, id):
     return render(request, 'base/room.html', context)
 
 
+@login_required(login_url='login')
 def create_room(request):
     form = RoomForm()
 
@@ -67,9 +70,13 @@ def create_room(request):
     return render(request, 'base/room_form.html', context)
 
 
+@login_required(login_url='login')
 def update_room(request, id):
     room = Room.objects.get(id=id)
     form = RoomForm(instance=room)
+
+    if request.user != room.host:
+        return HttpResponse('Not allowed to do that')
 
     if request.method == 'POST':
         form = RoomForm(request.POST, instance=room)
@@ -81,8 +88,12 @@ def update_room(request, id):
     return render(request, 'base/room_form.html', context)
 
 
+@login_required(login_url='login')
 def delete_room(request, id):
     room = Room.objects.get(id=id)
+
+    if request.user != room.host:
+        return HttpResponse('Not allowed to do that')
 
     if request.method == 'POST':
         room.delete()
