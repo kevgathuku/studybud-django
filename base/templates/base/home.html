@@ -1,6 +1,4 @@
-{% extends 'main.html' %} 
-
-{% block content %}
+{% extends 'main.html' %} {% block content %}
 
 <h1>Home Template</h1>
 
@@ -8,6 +6,7 @@
   <a href="{% url 'create_room' %}"> Create Room </a>
   {% for room in rooms %}
   <div>
+    <a href="{% url 'update_room' room.id %}"> Edit</a>
     <span>Host: @{{room.host.username}} </span>
     <h5>
       {{room.id}} --
